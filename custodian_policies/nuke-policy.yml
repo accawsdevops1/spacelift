@@ -1,0 +1,145 @@
+policies:
+
+  # Keep the admin-user
+  - name: delete-non-admin-iam-user
+    resource: iam-user
+    filters:
+      - type: value
+        key: UserName
+        op: not-in
+        value:
+          - admin-user
+    actions:
+      - type: delete
+
+  # Detach and delete IAM roles (except service-linked roles)
+  - name: delete-iam-roles
+    resource: iam-role
+    filters:
+      - type: value
+        key: RoleName
+        op: not-in
+        value:
+          - AWSServiceRoleFor*  # Adjust if you have specific roles to keep
+    actions:
+      - type: delete
+
+  # S3 Buckets
+  - name: delete-s3-buckets
+    resource: s3
+    actions:
+      - type: delete
+
+  # EC2 Instances
+  - name: terminate-ec2-instances
+    resource: ec2
+    actions:
+      - terminate
+
+  # EBS Volumes
+  - name: delete-ebs-volumes
+    resource: ebs
+    actions:
+      - delete
+
+  # AMIs
+  - name: delete-custom-amis
+    resource: ami
+    filters:
+      - type: value
+        key: OwnerId
+        value_type: swap
+        value: self
+    actions:
+      - deregister
+
+  # Security Groups
+  - name: delete-security-groups
+    resource: security-group
+    filters:
+      - type: value
+        key: GroupName
+        value: 'default'
+    actions:
+      - delete
+
+  # RDS Instances
+  - name: delete-rds-instances
+    resource: rds
+    actions:
+      - delete
+
+  # Lambda Functions
+  - name: delete-lambda-functions
+    resource: lambda
+    actions:
+      - delete
+
+  # CloudFormation Stacks
+  - name: delete-cloudformation-stacks
+    resource: aws.cfn
+    filters:
+      - type: value
+        key: StackStatus
+        value: 'CREATE_COMPLETE'
+    actions:
+      - delete
+
+  # DynamoDB Tables
+  - name: delete-dynamodb-tables
+    resource: dynamodb-table
+    actions:
+      - delete
+
+  # SNS Topics
+  - name: delete-sns-topics
+    resource: sns
+    actions:
+      - delete
+
+  # SQS Queues
+  - name: delete-sqs-queues
+    resource: sqs
+    actions:
+      - delete
+
+  # ELBs (Classic)
+  - name: delete-elb
+    resource: elb
+    actions:
+      - delete
+
+  # ELBs (Application/Network - V2)
+  - name: delete-elbv2
+    resource: aws.app-elb
+    actions:
+      - delete
+
+  # CloudWatch Log Groups
+  - name: delete-cloudwatch-logs
+    resource: log-group
+    actions:
+      - delete
+
+
+  # EKS Clusters
+  - name: delete-eks-clusters
+    resource: eks
+    actions:
+      - delete
+
+  # Auto Scaling Groups
+  - name: delete-asg
+    resource: asg
+    actions:
+      - delete
+
+  # VPCs
+  - name: delete-vpcs
+    resource: vpc
+    filters:
+      - type: value
+        key: isDefault
+        value: false
+    actions:
+      - delete-empty

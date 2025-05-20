@@ -1,0 +1,34 @@
+name: Dry Run AWS Nuke with Cloud Custodian
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dry-run-nuke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Cloud Custodian
+        run: |
+          pip install c7n
+
+      - name: Run Cloud Custodian (Dry Run)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+        run: |
+          custodian run --region us-east-1 --dryrun --output-dir ./output custodian_policies/nuke-policy.yml
+
+      - name: Upload Cloud Custodian Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud-custodian-dryrun-output
+          path: ./output

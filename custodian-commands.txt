@@ -1,0 +1,5 @@
+custodian validate nuke-policy.yml - to validate the policy
+
+custodian run --dryrun -s output nuke-policy.yml   - Dry run nuke
+
+custodian schema | grep aws. - You can list supported AWS resources
