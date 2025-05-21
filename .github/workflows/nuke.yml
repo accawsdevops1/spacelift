@@ -2,7 +2,8 @@ name: Nuke AWS with Cloud Custodian
 
 on:
   workflow_dispatch:
-
+  # schedule:
+    #- cron: '0 7 * * *'  # Every day at 7:00 AM UTC
 jobs:
   nuke:
     runs-on: ubuntu-latest
