@@ -2,6 +2,8 @@ name: Dry Run AWS Nuke with Cloud Custodian
 
 on:
   workflow_dispatch:
+  # schedule:
+    #- cron: '0 7 * * *'  # Every day at 7:00 AM UTC
 
 jobs:
   dry-run-nuke:
